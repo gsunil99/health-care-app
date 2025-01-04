@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { AppContext } from '../context/AppContext';
 import { useState } from 'react';
 import { assets } from '../assets/assets';
+import RelatedDoctors from '../components/RelatedDoctors';
 
 const Appointment = () => {
   const { doctorId } = useParams();
@@ -13,7 +14,7 @@ const Appointment = () => {
   const [slotTime,setSlotTime] = useState('');
   const daysOfWeek = ['SUN','MON','TUE','WED','THU','FRI','SAT']
   const fetchDoctorInfo = async () => {
-    const doctorInfo = doctors.find(doctor => doctor.id == doctorId)
+    const doctorInfo = doctors.find((doctor) => doctor._id === doctorId)
     setDoctorInfo(doctorInfo);
   }
   const getAvailableSlots = async()=>{
@@ -115,6 +116,8 @@ const Appointment = () => {
         </div>
         <button className='bg-primary text-white text-sm font-light px-14 py-3 rounded-full my-6'>Book an appointment</button>
       </div>
+      {/* listing related doctors */}
+      <RelatedDoctors doctorId={doctorInfo._id} speciality = {doctorInfo.speciality}/>
     </div>
   )
 }
