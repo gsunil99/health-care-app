@@ -9,7 +9,6 @@ export const addDoctor = async (req,res)=>{
     try {
        
        const {name,email,password,speciality,degree,experience,about,fees,address } = req.body;
-       console.log(name,email,password,speciality,degree,experience,about,fees,address);
        const imageFile = req.file
        if(!name || !email || !password || !speciality || !degree || !experience || !about || !fees || !address){
             return res.json({success:false,message:'Missing Details'})
@@ -56,8 +55,9 @@ export const addDoctor = async (req,res)=>{
 export const loginAdmin = async(req,res)=>{
     try {
         const {email,password} = req.body;
-        if(email === process.env.ADMIN_EMAIl && password === process.env.ADMIN_PASSWORD){
-
+        if(email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD){
+            const token = jwt.sign(email+password,process.env.JWT_SECRET);
+            res.json({success:true,token});
         }
         else {
             res.json({success:false,message:'Invalid credentials'})
