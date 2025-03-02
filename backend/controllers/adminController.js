@@ -9,6 +9,8 @@ export const addDoctor = async (req,res)=>{
     try {
        
        const {name,email,password,speciality,degree,experience,about,fees,address } = req.body;
+       console.log([name, email, password, speciality, degree, experience, about, fees, address].join(", "));
+
        const imageFile = req.file
        if(!name || !email || !password || !speciality || !degree || !experience || !about || !fees || !address){
             return res.json({success:false,message:'Missing Details'})
@@ -65,5 +67,15 @@ export const loginAdmin = async(req,res)=>{
     } catch (error) {
         console.log(error);
         res.json({success:false,message:error.message})
+    }
+}
+
+//API to get all doctors
+export const allDoctors = async(req,res)=>{
+    try {
+        const doctors = await doctorModel.find({}).select('-password')
+        res.json({success:true,doctors})
+    } catch (error) {
+        res.json({success:false,message:error.message});
     }
 }
