@@ -1,9 +1,7 @@
 import React, { useContext, useState } from 'react'
-import {assets} from '../assets/assets.js'
 import { AdminContext } from '../context/AdminContext.jsx';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { data } from 'react-router-dom';
 
 const Login = () => {
     const [state,setState] = useState('Admin');
