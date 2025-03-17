@@ -128,3 +128,14 @@ export const bookAppointment = async(req,res) =>{
         return res.json({success:false,message:error.message})
     }
 }
+
+export const getAllAppointments = async(req,res) =>{
+    try {
+       const {userId} = req.body;
+       const appointments = await appointmentModel.find({userId});
+       return res.json({success:true,appointments}); 
+    } catch (error) {
+        console.log(error);
+        return res.json({success:false,message:error.message})       
+    }
+}
