@@ -25,8 +25,9 @@ const Appointment = () => {
 
     //getting current date
     let today = new Date();
+    let validDays = 0; // Track valid days
 
-    for(let i=0;i<7;i++){
+    for(let i=0;validDays<7;i++){
       //getting date with index
       let currentDate = new Date(today);
       currentDate.setDate(today.getDate()+i);
@@ -45,6 +46,9 @@ const Appointment = () => {
         currentDate.setHours(10)
         currentDate.setMinutes(0)
       }
+      // Skip this day if currentDate already exceeds endTime
+    if (currentDate >= endTime) continue;
+
       let timeSlots = [];
       while(currentDate < endTime){
         let formattedTime = currentDate.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:true})
@@ -65,11 +69,11 @@ const Appointment = () => {
           })
         }
        
-
         //increment current time by 30minutes
         currentDate.setMinutes(currentDate.getMinutes()+30)
       }
       setDoctorSlots(prev=> ([...prev,timeSlots]));
+      validDays++;
     }
   }
 
