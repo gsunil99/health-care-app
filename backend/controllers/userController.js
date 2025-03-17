@@ -97,7 +97,7 @@ export const bookAppointment = async(req,res) =>{
             if(slots_booked[slotDate].includes(slotTime)){
                 return res.json({success:false,message:'Slot not available'})
             }else{
-                slots_booked.push(slotTime)
+                slots_booked[slotDate].push(slotTime)
             }
         }else{
             slots_booked[slotDate]=[];
