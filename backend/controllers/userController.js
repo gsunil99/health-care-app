@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import {v2 as cloudinary} from 'cloudinary'
 import doctorModel from '../models/doctorModel.js';
 import { appointmentModel } from '../models/appointmentModel.js';
+import razorpay from 'razorpay';
 //API register user
 export const registerUser = async(req,res) =>{
     try {
@@ -160,5 +161,49 @@ export const cancelAppointment = async(req,res)=>{
     } catch (error) {
         console.log(error);
         return res.json({success:false,message:error.message})   
+    }
+}
+const razorPayInstance = new razorpay({
+    key_id:process.env.RAZOR_PAY_KEY_ID,
+    key_secret:process.env.RAZOR_PAY_KEY_SECRET
+})
+
+//api payment of appointment using razorpay
+export const paymentRazorPay = async(req,res)=>{
+    try {
+        const { appointmentId } = req.body;
+        const appointmentData = await appointmentModel.findById(appointmentId);
+        if(!appointmentData || appointmentData.cancelled){
+            return res.json({success:false,message:'Appointment cancelled or not found'});
+        }
+        const options = {
+            amount:appointmentData.amount *100,
+            currency : process.env.CURRENCY,
+            receipt: appointmentId
+        }
+        //order creation
+        const order = await razorPayInstance.orders.create(options)
+        return res.json({success:true,order});
+    
+    } catch (error) {
+        console.log(error);
+        return res.json({success:false,message:error.message})       
+    }
+}
+
+//api to verify payment
+export const verifyRazorPay = async(req,res) =>{
+    try {
+        const {razorpay_order_id} = req.body;
+        const orderInfo = await razorPayInstance.orders.fetch(razorpay_order_id)
+        if(orderInfo.status === 'paid'){
+            await appointmentModel.findByIdAndUpdate(orderInfo.receipt,{payment:true})
+            return res.json({success:true,message:'Payment successfull'})
+        } else{
+            return res.json({success:false,message:'Payment failed'})
+        }
+    } catch (error) {
+        console.log(error);
+        return res.json({success:false,message:error.message})
     }
 }
