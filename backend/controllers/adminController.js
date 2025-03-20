@@ -3,6 +3,7 @@ import {v2 as cloudinary} from 'cloudinary';
 import doctorModel from "../models/doctorModel.js";
 import validator from 'validator';
 import jwt from 'jsonwebtoken';
+import { appointmentModel } from '../models/appointmentModel.js';
 
 // Api for adding doctor
 export const addDoctor = async (req,res)=>{
@@ -77,5 +78,16 @@ export const allDoctors = async(req,res)=>{
         res.json({success:true,doctors})
     } catch (error) {
         res.json({success:false,message:error.message});
+    }
+}
+
+//API to get all appointments
+export const appointmentsAdmin = async(req,res)=>{
+    try {
+        const {appointments} = await appointmentModel.find({});
+        return res.json({success:true,appointments});
+    } catch (error) {
+        console.log(error);
+        return res.json({success:false,message:error.message});
     }
 }
