@@ -84,7 +84,7 @@ export const allDoctors = async(req,res)=>{
 //API to get all appointments
 export const appointmentsAdmin = async(req,res)=>{
     try {
-        const {appointments} = await appointmentModel.find({});
+        const appointments = await appointmentModel.find({});
         return res.json({success:true,appointments});
     } catch (error) {
         console.log(error);
