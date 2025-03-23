@@ -9,7 +9,7 @@ import axios from 'axios'
 
 const Appointment = () => {
   const { doctorId } = useParams();
-  const { doctors,currencySymbol,backendUrl,getDoctorsData,token } = useContext(AppContext);
+  const { doctors,currencySymbol,backendUrl,getDoctorsData,token,userData } = useContext(AppContext);
   const navigate = useNavigate();
   const [doctorInfo, setDoctorInfo] = useState(null);
   const [doctorSlots,setDoctorSlots] = useState([]);
@@ -82,12 +82,15 @@ const Appointment = () => {
       toast.warn('Login to book appointment')
       return navigate('/login')
     }
+    if(!userData.name || !userData.email || !userData.image || !userData.address.line1 || !userData.address.line2 || !userData.dob || !userData.gender || !userData.phone){
+      toast.warn('Before booking appointment update your profile details!!!')
+      return navigate('/my-profile')
+    }
     try {
       const date = doctorSlots[slotIndex][0].dateTime
       let day = date.getDate();
       let month = date.getMonth()+1;
       let year = date.getFullYear()
-
       const slotDate = day+'_'+month+'_'+year
       const {data} = await axios.post(backendUrl+'/api/user/book-appointment',{docId:doctorId,slotDate,slotTime},{headers:{token}})
       if(data.success){
