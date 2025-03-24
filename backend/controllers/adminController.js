@@ -4,6 +4,7 @@ import doctorModel from "../models/doctorModel.js";
 import validator from 'validator';
 import jwt from 'jsonwebtoken';
 import { appointmentModel } from '../models/appointmentModel.js';
+import userModel from '../models/userModel.js';
 
 // Api for adding doctor
 export const addDoctor = async (req,res)=>{
@@ -86,6 +87,48 @@ export const appointmentsAdmin = async(req,res)=>{
     try {
         const appointments = await appointmentModel.find({});
         return res.json({success:true,appointments});
+    } catch (error) {
+        console.log(error);
+        return res.json({success:false,message:error.message});
+    }
+}
+
+//API for appointment cancellation
+export const cancelAppointment = async(req,res)=>{
+    try {
+        const{appointmentId} = req.body;
+        const appointmentData = await appointmentModel.findById(appointmentId);
+
+        await appointmentModel.findByIdAndUpdate(appointmentId,{cancelled:true})
+
+        //release doctor slot
+        const {docId,slotDate,slotTime} = appointmentData;
+        const doctorData = await doctorModel.findById(docId);
+        let slots_booked = doctorData.slots_booked;
+        slots_booked[slotDate] = slots_booked[slotDate].filter(e=>e!=slotTime);
+        await doctorModel.findByIdAndUpdate(docId,{slots_booked})
+        return res.json({success:true,message:'Appointment cancelled'})
+    } catch (error) {
+        console.log(error);
+        return res.json({success:false,message:error.message})   
+    }
+}
+
+
+//API to get dashboard details
+export const adminDashboard = async(req,res) =>{
+    try {
+        const doctors = await doctorModel.find({});
+        const users = await userModel.find({});
+        const appointments = await appointmentModel.find({});
+        const dashData = {
+            doctorsCount:doctors.length,
+            appointmentsCount: appointments.length,
+            patientsCount: users.length,
+            latestAppointments: appointments.reverse().slice(0,5)
+        }
+        return res.json({success:true,dashData});
+
     } catch (error) {
         console.log(error);
         return res.json({success:false,message:error.message});
