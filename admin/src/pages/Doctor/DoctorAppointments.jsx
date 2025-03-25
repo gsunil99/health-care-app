@@ -8,9 +8,10 @@ import { assets } from '../../assets/assets'
 const DoctorAppointments = () => {
     const { dToken,
         getAppointments,
-        appointments } = useContext(DoctorContext)
+        appointments, completeAppointment,
+        cancelAppointment } = useContext(DoctorContext)
 
-    const { calculateAge,slotDateFormat,currency } = useContext(AppContext)
+    const { calculateAge, slotDateFormat, currency } = useContext(AppContext)
 
     useEffect(() => {
         if (dToken) {
@@ -30,26 +31,33 @@ const DoctorAppointments = () => {
                     <p>Fees</p>
                     <p>Action</p>
                 </div>
-                {appointments.map((item, index) => (
-                    <div className='flex flex-wrap justify-between max-sm:gap-5 max-sm:text-base sm:grid-cols-[0.5fr_2fr_1fr_1fr_3fr_1fr_1fr] gap-1 items-center text-gray-500 py-3 px-6 border-b' key={index}>
-                        <p>
+                {appointments.reverse().map((item, index) => (
+                    <div className='flex flex-wrap justify-between max-sm:gap-2 max-sm:text-base sm:grid sm:grid-cols-[0.5fr_2fr_1fr_1fr_3fr_1fr_1fr] gap-1 items-center text-gray-500 py-3 px-6 border-b hover:bg-gray-100' key={index}>
+                        <p className='max-sm:hidden'>
                             {index + 1}
                         </p>
-                        <div>
-                            <img className='' src={item.userData.image} alt="" /> <p>{item.userData.name}</p>
+                        <div className='flex items-center gap-2'>
+                            <img className='rounded-full w-8' src={item.userData.image} alt="" /> <p>{item.userData.name}</p>
                         </div>
                         <div>
-                            <p>
+                            <p className='text-xs inline border border-primary px-2 rounded-full'>
                                 {item.payment ? 'Online' : 'Cash'}
                             </p>
                         </div>
-                        <p>{calculateAge(item.userData.dob)}</p>
+                        <p className='max-sm:hidden'>{calculateAge(item.userData.dob)}</p>
                         <p>{slotDateFormat(item.slotDate)}, {item.slotTime}</p>
                         <p>{currency} {item.amount}</p>
-                        <div>
-                            <img src={assets.cancel_icon} alt="" />
-                            <img src={assets.tick_icon} alt="" />
-                        </div>
+                        {
+                            item.cancelled
+                                ? <p className='text-red-400 text-xs font-medium'>Cancelled</p>
+                                : item.isCompleted
+                                    ? <p className='text-green-400 text-xs font-medium'>Completed</p>
+                                    : <div className='flex'>
+                                        <img onClick={() => cancelAppointment(item._id)} className='w-10 cursor-pointer' src={assets.cancel_icon} alt="" />
+                                        <img onClick={() => completeAppointment(item._id)} className='w-10 cursor-pointer' src={assets.tick_icon} alt="" />
+                                    </div>
+                        }
+
                     </div>
                 ))
                 }
