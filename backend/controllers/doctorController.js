@@ -55,3 +55,92 @@ export const appointmentsDoctor = async(req,res) =>{
         res.json({success:false,message:error.message})
     }
 }
+
+//API to mark completed
+export const appointmentComplete = async(req,res)=>{
+    try {
+        const{docId,appointmentId} = req.body;
+        const appointmentData = await appointmentModel.findById(appointmentId);
+        if(appointmentData && appointmentData.docId==docId){
+            await appointmentModel.findByIdAndUpdate(appointmentId,{isCompleted:true});
+            return res.json({success:true,message:'Appointment completed'})
+        }else{
+            return res.json({success:false,message:'Mark Failed'})
+        }
+    } catch (error) {
+        console.log(error);
+        res.json({success:false,message:error.message})
+    }
+}
+
+//API to cancel appointment
+export const appointmentCancel = async(req,res)=>{
+    try {
+        const{docId,appointmentId} = req.body;
+        const appointmentData = await appointmentModel.findById(appointmentId);
+        if(appointmentData && appointmentData.docId===docId){
+            await appointmentModel.findByIdAndUpdate(appointmentId,{cancelled:true});
+            return res.json({success:true,message:'Appointment cancelled'})
+        }else{
+            return res.json({success:false,message:'Cancellation Failed'})
+        }
+    } catch (error) {
+        console.log(error);
+        res.json({success:false,message:error.message})
+    }
+}
+
+
+//API to get dash board data
+export const doctorDashboard = async(req,res)=>{
+    try {
+        const{docId} = req.body;
+        const appointmentData = await appointmentModel.find({docId});
+        let earnings=0
+        appointmentData.map((item)=>{
+            if(item.isCompleted || item.payment){
+                earnings += Number(item.amount)
+            }
+        })
+        let patients = []
+        appointmentData.map((item)=>{
+            if(!patients.includes(item.userId)){
+                patients.push(item.userId)
+            }
+        })
+        const dashData = {
+            earnings,
+            appointmentsCount: appointmentData.length,
+            patientsCount : patients.length,
+            latestAppointments : appointmentData.reverse().slice(0,5)
+        }
+        res.json({success:true,dashData});
+    } catch (error) {
+        console.log(error);
+        res.json({success:false,message:error.message})
+    }
+}
+
+export const doctorProfile = async(req,res)=>{
+    try {
+        const{docId} = req.body;
+        const profileData = await doctorModel.findById(docId).select('-password');
+        return res.json({success:true,profileData})
+        
+    } catch (error) {
+        console.log(error);
+        res.json({success:false,message:error.message})
+    }
+}
+
+
+export const updateDoctorProfile = async(req,res)=>{
+    try {
+        const {docId,fees,address,available} = req.body;
+        await doctorModel.findByIdAndUpdate(docId,{fees,address,available});
+        return res.json({success:true,message:'Profile Updated'})
+    } catch (error) {
+        console.log(error);
+        res.json({success:false,message:error.message})
+    }
+}
