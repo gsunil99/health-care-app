@@ -27,7 +27,7 @@ const Dashboard = () => {
           <img className='w-14' src={assets.appointments_icon} alt="" />
           <div>
             <p className='text-xl font-semibold text-gray-600'>{dashData.appointmentsCount}</p>
-            <p className='text-gray-400'>Doctors</p>
+            <p className='text-gray-400'>Appointments</p>
           </div>
         </div>
 
@@ -35,7 +35,7 @@ const Dashboard = () => {
           <img className='w-14' src={assets.patients_icon} alt="" />
           <div>
             <p className='text-xl font-semibold text-gray-600'>{dashData.patientsCount}</p>
-            <p>Doctors</p>
+            <p>Patients</p>
           </div>
         </div>
       </div>
