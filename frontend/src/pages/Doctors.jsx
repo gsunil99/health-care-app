@@ -14,7 +14,7 @@ const SPECIALITIES = [
 const Doctors = () => {
   const { speciality } = useParams();
   const [filterDoc, setFilterDoc] = useState([]);
-  const [showFilters,setShowFilters] = useState([]);
+  const [showFilters, setShowFilters] = useState([]);
   const navigate = useNavigate();
   const { doctors } = useContext(AppContext);
 
@@ -42,15 +42,14 @@ const Doctors = () => {
     <div>
       <p className="text-gray-600">Browse through the doctors specialist.</p>
       <div className="flex flex-col sm:flex-row gap-5 mt-5 items-start">
-        <button className={`py-1 px-3 border rounded text-sm transition-all sm:hidden ${showFilters ? 'bg-primary text-white':''}`} onClick={()=>setShowFilters(prev => !prev)}>Filters</button>
-        <div className={`flex-col gap-4 text-sm text-gray-600 ${showFilters ? 'flex': 'hidden sm:flex'}`}>
+        <button className={`py-1 px-3 border rounded text-sm transition-all sm:hidden ${showFilters ? 'bg-primary text-white' : ''}`} onClick={() => setShowFilters(prev => !prev)}>Filters</button>
+        <div className={`flex-col gap-4 text-sm text-gray-600 ${showFilters ? 'flex' : 'hidden sm:flex'}`}>
           {SPECIALITIES.map((item) => (
             <p
               key={item}
               onClick={() => handleNavigate(item)}
-              className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${
-                speciality === item ? 'bg-indigo-100 text-black' : ''
-              }`}
+              className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${speciality === item ? 'bg-indigo-100 text-black' : ''
+                }`}
             >
               {item}
             </p>
@@ -65,9 +64,9 @@ const Doctors = () => {
             >
               <img src={ele.image} className="bg-blue-50"></img>
               <div className="p-4">
-                <div className="flex items-center gap-2 text-sm text-center text-green-500">
-                  <p className="w-2 h-2 bg-green-500 rounded-full"></p>
-                  <p>Available</p>
+
+                <div className={`flex items-center gap-2 text-sm text-center ${ele.available ? 'text-green-500' : 'text-gray-500'}`}>
+                  <p className={`w-2 h-2 ${ele.available ? 'bg-green-500' : 'bg-gray-500'} rounded-full`}></p>{ele.available ? <p>Available</p> : <p>Not Available</p>}
                 </div>
                 <p className="text-gray-900 text-lg font-medium">{ele.name}</p>
                 <p className="text-gray-600 text-sm">{ele.speciality}</p>
