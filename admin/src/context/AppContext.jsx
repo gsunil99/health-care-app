@@ -6,12 +6,22 @@ const AppContextProvider = (props)=>{
 
     const currency = '$'
      
-    const calculateAge = (dob)=>{
-        const today = new Date()
-        const birthDate = new Date(dob)
-        let age = today.getFullYear() - birthDate.getFullYear()
-        return age;
-    }
+    const calculateAge = (dob) => {
+        const today = new Date();
+        const birthDate = new Date(dob);
+        
+        let age = today.getFullYear() - birthDate.getFullYear();
+        
+        // Adjust age if birth date hasn't occurred yet this year
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        const dayDiff = today.getDate() - birthDate.getDate();
+        
+        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+            age--;
+        }
+    
+        return age >= 0 ? age : 0; // Ensure age is not negative
+    };
     const months = ["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 
   const slotDateFormat = (slotDate)=>{
