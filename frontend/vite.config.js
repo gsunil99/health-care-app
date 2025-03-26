@@ -8,6 +8,9 @@ export default defineConfig({
     hmr: {
       overlay: false,
     },
-    port:5173
+    port:5173,
+    mimeTypes: {
+      'js': 'text/javascript'
+    }
   },
 })
