@@ -1,11 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import './src/index.css'
+import App from './src/App.jsx'
 import { BrowserRouter } from 'react-router-dom'
-import AdminContextProvider from './context/AdminContext.jsx'
-import DoctorContextProvider from './context/DoctorContext.jsx'
-import AppContextProvider from './context/Appcontext.jsx'
+import AdminContextProvider from './src/context/AdminContext.jsx'
+import DoctorContextProvider from './src/context/DoctorContext.jsx'
+import AppContextProvider from './src/context/Appcontext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
