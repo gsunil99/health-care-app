@@ -36,6 +36,7 @@ const Doctors = () => {
     } else {
       navigate(`/doctors/${encodeURIComponent(clickedSpeciality)}`);
     }
+    setShowFilters(prev => !prev)
   };
 
   return (
